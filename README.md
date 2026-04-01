@@ -46,7 +46,7 @@ The response object has the following properties:
 | `orderId` | `string` | Your order identifier |
 | `priceAmount` | `string` | Price amount |
 | `priceCurrency` | `string` | Currency code (e.g. `USD`) |
-| `status` | `CheckoutStatus` | `OPEN`, `COMPLETED`, `EXPIRED`, or `CANCELLED` |
+| `status` | `CheckoutStatus` | `OPEN`, `COMPLETED`, `PARTIALLY_PAID`, `EXPIRED`, or `CANCELLED` |
 | `checkoutUrl` | `string` | URL to redirect the customer to |
 | `createdAt` | `string` | ISO 8601 timestamp |
 | `expiresAt` | `?string` | ISO 8601 timestamp or null |
@@ -90,12 +90,4 @@ try {
     echo $e->status; // HTTP status code
     echo $e->body;   // Response body
 }
-```
-
-### Custom base URL
-
-```php
-$client = new ZenobankClient('your-api-key', [
-    'baseUrl' => 'https://api.staging.zenobank.io',
-]);
 ```
