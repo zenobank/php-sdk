@@ -9,26 +9,37 @@ use Zenobank\Sdk\Types\CheckoutResponseDto;
 
 class CheckoutsResource
 {
-    public function __construct(
-        private readonly string $baseUrl,
-        private readonly string $apiKey,
-    ) {}
+    private string $base_url;
+    private string $api_key;
+
+    public function __construct(string $base_url, string $api_key)
+    {
+        $this->base_url = $base_url;
+        $this->api_key = $api_key;
+    }
 
     /**
-     * @param array{orderId: string, priceAmount: string, priceCurrency: string, successRedirectUrl?: string|null} $params
+     * @param array{order_id: string, price_amount: string, price_currency: string, success_redirect_url?: string|null} $params
      */
     public function create(array $params): CheckoutResponseDto
     {
-        $data = $this->request('POST', '/api/v1/checkouts', $params);
+        $body = [
+            'orderId' => $params['order_id'],
+            'priceAmount' => $params['price_amount'],
+            'priceCurrency' => $params['price_currency'],
+            'successRedirectUrl' => $params['success_redirect_url'] ?? null,
+        ];
 
-        return CheckoutResponseDto::fromArray($data);
+        $data = $this->request('POST', '/api/v1/checkouts', $body);
+
+        return CheckoutResponseDto::from_array($data);
     }
 
-    public function get(string $checkoutId): CheckoutResponseDto
+    public function get(string $checkout_id): CheckoutResponseDto
     {
-        $data = $this->request('GET', '/api/v1/checkouts/' . urlencode($checkoutId));
+        $data = $this->request('GET', '/api/v1/checkouts/' . urlencode($checkout_id));
 
-        return CheckoutResponseDto::fromArray($data);
+        return CheckoutResponseDto::from_array($data);
     }
 
     /**
@@ -39,10 +50,10 @@ class CheckoutsResource
      */
     private function request(string $method, string $path, ?array $body = null): array
     {
-        $url = $this->baseUrl . $path;
+        $url = $this->base_url . $path;
 
         $headers = [
-            'X-API-Key: ' . $this->apiKey,
+            'X-API-Key: ' . $this->api_key,
             'Accept: application/json',
         ];
 
@@ -60,7 +71,7 @@ class CheckoutsResource
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         $response = curl_exec($ch);
-        $statusCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $status_code = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($response === false) {
             $error = curl_error($ch);
@@ -72,13 +83,13 @@ class CheckoutsResource
 
         $decoded = json_decode($response, true);
 
-        if ($statusCode < 200 || $statusCode >= 300) {
-            $message = $statusCode . ' ' . ($decoded['message'] ?? $response);
-            throw new ZenobankError($message, $statusCode, $decoded ?? $response);
+        if ($status_code < 200 || $status_code >= 300) {
+            $message = $status_code . ' ' . ($decoded['message'] ?? $response);
+            throw new ZenobankError($message, $status_code, $decoded ?? $response);
         }
 
         if (!is_array($decoded)) {
-            throw new ZenobankError('Invalid JSON response', $statusCode, $response);
+            throw new ZenobankError('Invalid JSON response', $status_code, $response);
         }
 
         return $decoded;

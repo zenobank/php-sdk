@@ -8,31 +8,31 @@ class CheckoutResponseDto
 {
     public function __construct(
         public readonly string $id,
-        public readonly string $orderId,
-        public readonly string $priceCurrency,
-        public readonly string $priceAmount,
+        public readonly string $order_id,
+        public readonly string $price_currency,
+        public readonly string $price_amount,
         public readonly CheckoutStatus $status,
-        public readonly ?string $expiresAt,
-        public readonly string $checkoutUrl,
-        public readonly string $createdAt,
-        public readonly ?string $successRedirectUrl,
+        public readonly ?string $expires_at,
+        public readonly string $checkout_url,
+        public readonly string $created_at,
+        public readonly ?string $success_redirect_url,
     ) {}
 
     /**
      * @param array<string, mixed> $data
      */
-    public static function fromArray(array $data): self
+    public static function from_array(array $data): self
     {
         return new self(
             id: $data['id'],
-            orderId: $data['orderId'],
-            priceCurrency: $data['priceCurrency'],
-            priceAmount: $data['priceAmount'],
+            order_id: $data['orderId'],
+            price_currency: $data['priceCurrency'],
+            price_amount: $data['priceAmount'],
             status: CheckoutStatus::from($data['status']),
-            expiresAt: $data['expiresAt'] ?? null,
-            checkoutUrl: $data['checkoutUrl'],
-            createdAt: $data['createdAt'],
-            successRedirectUrl: $data['successRedirectUrl'] ?? null,
+            expires_at: $data['expiresAt'] ?? null,
+            checkout_url: $data['checkoutUrl'],
+            created_at: $data['createdAt'],
+            success_redirect_url: $data['successRedirectUrl'] ?? null,
         );
     }
 }

@@ -6,7 +6,6 @@ namespace Zenobank\Sdk\Resources;
 
 use Zenobank\Sdk\Exceptions\MissingWebhookHeadersError;
 use Zenobank\Sdk\Exceptions\WebhookVerificationError;
-use Zenobank\Sdk\Types\WebhookEvent;
 
 class WebhooksResource
 {
@@ -16,15 +15,15 @@ class WebhooksResource
     /**
      * Verify a webhook signature.
      *
-     * @param string $rawBody The raw request body
+     * @param string $raw_body The raw request body
      * @param string $secret Your webhook signing secret
      * @param array<string, string|string[]|null> $headers All request headers
      */
-    public function isValid(string $rawBody, string $secret, array $headers): bool
+    public function is_valid(string $raw_body, string $secret, array $headers): bool
     {
         try {
-            $extracted = $this->extractHeaders($headers);
-            $this->verifySignature($secret, $rawBody, $extracted);
+            $extracted = $this->extract_headers($headers);
+            $this->verify_signature($secret, $raw_body, $extracted);
             return true;
         } catch (\Throwable) {
             return false;
@@ -36,18 +35,18 @@ class WebhooksResource
      *
      * @throws WebhookVerificationError
      */
-    private function verifySignature(string $secret, string $rawBody, array $headers): void
+    private function verify_signature(string $secret, string $raw_body, array $headers): void
     {
         if (str_starts_with($secret, 'whsec_')) {
             $secret = substr($secret, 6);
         }
-        $secretBytes = base64_decode($secret, true);
+        $secret_bytes = base64_decode($secret, true);
 
-        if ($secretBytes === false) {
+        if ($secret_bytes === false) {
             throw new WebhookVerificationError('Invalid webhook secret');
         }
 
-        $msgId = $headers['id'];
+        $msg_id = $headers['id'];
         $timestamp = $headers['timestamp'];
         $signature = $headers['signature'];
 
@@ -58,13 +57,13 @@ class WebhooksResource
         }
 
         // Compute expected signature
-        $toSign = "{$msgId}.{$timestamp}.{$rawBody}";
-        $hash = hash_hmac('sha256', $toSign, $secretBytes, true);
+        $to_sign = "{$msg_id}.{$timestamp}.{$raw_body}";
+        $hash = hash_hmac('sha256', $to_sign, $secret_bytes, true);
         $expected = 'v1,' . base64_encode($hash);
 
         // Signatures can be space-separated (multiple versions)
-        $providedSignatures = explode(' ', $signature);
-        foreach ($providedSignatures as $sig) {
+        $provided_signatures = explode(' ', $signature);
+        foreach ($provided_signatures as $sig) {
             if (hash_equals($expected, trim($sig))) {
                 return;
             }
@@ -79,7 +78,7 @@ class WebhooksResource
      *
      * @throws MissingWebhookHeadersError
      */
-    private function extractHeaders(array $headers): array
+    private function extract_headers(array $headers): array
     {
         // Normalize header keys to lowercase
         $normalized = [];

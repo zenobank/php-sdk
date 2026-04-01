@@ -28,14 +28,14 @@ $client = new ZenobankClient('your-api-key');
 
 ```php
 $checkout = $client->checkouts->create([
-    'orderId' => 'order-123',
-    'priceAmount' => '10.00',
-    'priceCurrency' => 'USD',
-    'successRedirectUrl' => 'https://example.com/success',
+    'order_id' => 'order-123',
+    'price_amount' => '10.00',
+    'price_currency' => 'USD',
+    'success_redirect_url' => 'https://example.com/success',
 ]);
 
 // Redirect the customer
-header('Location: ' . $checkout->checkoutUrl);
+header('Location: ' . $checkout->checkout_url);
 ```
 
 The response object has the following properties:
@@ -43,14 +43,14 @@ The response object has the following properties:
 | Property | Type | Description |
 |---|---|---|
 | `id` | `string` | Checkout ID |
-| `orderId` | `string` | Your order identifier |
-| `priceAmount` | `string` | Price amount |
-| `priceCurrency` | `string` | Currency code (e.g. `USD`) |
+| `order_id` | `string` | Your order identifier |
+| `price_amount` | `string` | Price amount |
+| `price_currency` | `string` | Currency code (e.g. `USD`) |
 | `status` | `CheckoutStatus` | `OPEN`, `COMPLETED`, `PARTIALLY_PAID`, `EXPIRED`, or `CANCELLED` |
-| `checkoutUrl` | `string` | URL to redirect the customer to |
-| `createdAt` | `string` | ISO 8601 timestamp |
-| `expiresAt` | `?string` | ISO 8601 timestamp or null |
-| `successRedirectUrl` | `?string` | Redirect URL after payment |
+| `checkout_url` | `string` | URL to redirect the customer to |
+| `created_at` | `string` | ISO 8601 timestamp |
+| `expires_at` | `?string` | ISO 8601 timestamp or null |
+| `success_redirect_url` | `?string` | Redirect URL after payment |
 
 ### Get a checkout
 
@@ -69,9 +69,9 @@ $payload = file_get_contents('php://input');
 $headers = getallheaders();
 $secret = 'whsec_...';
 
-$isValid = $client->webhooks->isValid($payload, $secret, $headers);
+$is_valid = $client->webhooks->is_valid($payload, $secret, $headers);
 
-if ($isValid) {
+if ($is_valid) {
     $event = json_decode($payload, true);
     // Handle the event
 }

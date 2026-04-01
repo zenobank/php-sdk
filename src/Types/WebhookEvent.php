@@ -14,11 +14,11 @@ class WebhookEvent
     /**
      * @param array<string, mixed> $data
      */
-    public static function fromArray(array $data): self
+    public static function from_array(array $data): self
     {
         return new self(
             type: WebhookEventType::from($data['type']),
-            data: CheckoutResponseDto::fromArray($data['data']),
+            data: CheckoutResponseDto::from_array($data['data']),
         );
     }
 }
