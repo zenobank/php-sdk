@@ -18,16 +18,14 @@ class WebhooksResource
      * @param string $raw_body The raw request body
      * @param string $secret Your webhook signing secret
      * @param array<string, string|string[]|null> $headers All request headers
+     *
+     * @throws MissingWebhookHeadersError
+     * @throws WebhookVerificationError
      */
-    public function is_valid(string $raw_body, string $secret, array $headers): bool
+    public function verify(string $raw_body, string $secret, array $headers): void
     {
-        try {
-            $extracted = $this->extract_headers($headers);
-            $this->verify_signature($secret, $raw_body, $extracted);
-            return true;
-        } catch (\Throwable) {
-            return false;
-        }
+        $extracted = $this->extract_headers($headers);
+        $this->verify_signature($secret, $raw_body, $extracted);
     }
 
     /**
@@ -97,7 +95,7 @@ class WebhooksResource
             }
 
             if ($value === null || $value === '') {
-                $missing[] = "zeno-{$key} / svix-{$key}";
+                $missing[] = "svix-{$key}";
             } else {
                 $out[$key] = (string) $value;
             }

@@ -65,15 +65,19 @@ if ($checkout->status === CheckoutStatus::COMPLETED) {
 ### Verify webhooks
 
 ```php
+use Zenobank\Sdk\Exceptions\WebhookVerificationError;
+
 $payload = file_get_contents('php://input');
 $headers = getallheaders();
 $secret = 'whsec_...';
 
-$is_valid = $client->webhooks->is_valid($payload, $secret, $headers);
-
-if ($is_valid) {
+try {
+    $client->webhooks->verify($payload, $secret, $headers);
     $event = json_decode($payload, true);
     // Handle the event
+} catch (WebhookVerificationError $e) {
+    // Invalid signature or missing headers
+    http_response_code(400);
 }
 ```
 
