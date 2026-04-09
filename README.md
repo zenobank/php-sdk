@@ -19,9 +19,9 @@ composer require zenobank/sdk
 ### Initialize the client
 
 ```php
-use Zenobank\Sdk\ZenobankClient;
+use Zenobank\Sdk\ZenoBankClient;
 
-$client = new ZenobankClient('your-api-key');
+$client = new ZenoBankClient('your-api-key');
 ```
 
 ### Create a checkout

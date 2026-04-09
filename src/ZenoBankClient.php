@@ -7,7 +7,7 @@ namespace Zenobank\Sdk;
 use Zenobank\Sdk\Resources\CheckoutsResource;
 use Zenobank\Sdk\Resources\WebhooksResource;
 
-class ZenobankClient
+class ZenoBankClient
 {
     private const DEFAULT_BASE_URL = 'https://api.zenobank.io';
 
