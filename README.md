@@ -1,12 +1,11 @@
 # ZenoBank PHP SDK
 
-PHP SDK for the ZenoBank payment API. Accept crypto payments with checkout sessions and verify webhooks.
+The official PHP SDK for ZenoBank's Crypto Payment Gateway API. Accept crypto payments with checkout sessions and verify webhooks.
 
-## Requirements
-
-- PHP 8.1+
-- cURL extension
-- JSON extension
+- **Dashboard** — [dashboard.zenobank.io](https://dashboard.zenobank.io) (create an account and get your API key)
+- **Documentation** — [docs.zenobank.io](https://docs.zenobank.io)
+- **Checkout demo** — [pay.zenobank.io/demo](https://pay.zenobank.io/demo)
+- **Support** — [zenobank.io/support](https://zenobank.io/support)
 
 ## Installation
 
@@ -38,12 +37,6 @@ $checkout = $client->checkouts->create([
 header('Location: ' . $checkout->checkout_url);
 ```
 
-### Get a checkout
-
-```php
-$checkout = $client->checkouts->get('ch_0gJfH4a9B2Eg1jpES');
-```
-
 ### Verify webhooks
 
 ```php
@@ -68,17 +61,8 @@ try {
 }
 ```
 
-### Error handling
-
-API errors throw `ZenoBankError` with the HTTP status code and response body:
+### Get a checkout
 
 ```php
-use ZenoBank\Sdk\Exceptions\ZenoBankError;
-
-try {
-    $checkout = $client->checkouts->create([...]);
-} catch (ZenoBankError $e) {
-    echo $e->status; // HTTP status code
-    echo $e->body;   // Response body
-}
+$checkout = $client->checkouts->get('ch_0gJfH4a9B2Eg1jpES');
 ```
