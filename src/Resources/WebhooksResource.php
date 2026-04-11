@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Zenobank\Sdk\Resources;
+namespace ZenoBank\Sdk\Resources;
 
-use Zenobank\Sdk\Exceptions\MissingWebhookHeadersError;
-use Zenobank\Sdk\Exceptions\WebhookVerificationError;
+use ZenoBank\Sdk\Exceptions\MissingWebhookHeadersError;
+use ZenoBank\Sdk\Exceptions\WebhookVerificationError;
 
 class WebhooksResource
 {

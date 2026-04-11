@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Zenobank\Sdk\Resources;
+namespace ZenoBank\Sdk\Resources;
 
-use Zenobank\Sdk\Exceptions\ZenobankError;
-use Zenobank\Sdk\Types\CheckoutResponseDto;
+use ZenoBank\Sdk\Exceptions\ZenoBankError;
+use ZenoBank\Sdk\Types\Generated\CheckoutResponseDto;
+use ZenoBank\Sdk\Types\Generated\CreateCheckoutDto;
 
 class CheckoutsResource
 {
@@ -23,16 +24,28 @@ class CheckoutsResource
      */
     public function create(array $params): CheckoutResponseDto
     {
-        $body = [
-            'orderId' => $params['order_id'],
-            'priceAmount' => $params['price_amount'],
-            'priceCurrency' => $params['price_currency'],
-            'successRedirectUrl' => $params['success_redirect_url'] ?? null,
-        ];
-
-        $data = $this->request('POST', '/api/v1/checkouts', $body);
+        $dto = CreateCheckoutDto::from_array(self::snake_keys_to_camel($params));
+        $data = $this->request('POST', '/api/v1/checkouts', $dto->to_array());
 
         return CheckoutResponseDto::from_array($data);
+    }
+
+    /**
+     * @param array<string, mixed> $params
+     * @return array<string, mixed>
+     */
+    private static function snake_keys_to_camel(array $params): array
+    {
+        $out = [];
+        foreach ($params as $key => $value) {
+            $camel = (string) preg_replace_callback(
+                '/_([a-z])/',
+                static fn (array $m): string => strtoupper($m[1]),
+                $key,
+            );
+            $out[$camel] = $value;
+        }
+        return $out;
     }
 
     public function get(string $checkout_id): CheckoutResponseDto
@@ -46,7 +59,7 @@ class CheckoutsResource
      * @param array<string, mixed>|null $body
      * @return array<string, mixed>
      *
-     * @throws ZenobankError
+     * @throws ZenoBankError
      */
     private function request(string $method, string $path, ?array $body = null): array
     {
@@ -76,7 +89,7 @@ class CheckoutsResource
         if ($response === false) {
             $error = curl_error($ch);
             curl_close($ch);
-            throw new ZenobankError('Request failed: ' . $error, 0);
+            throw new ZenoBankError('Request failed: ' . $error, 0);
         }
 
         curl_close($ch);
@@ -85,11 +98,11 @@ class CheckoutsResource
 
         if ($status_code < 200 || $status_code >= 300) {
             $message = $status_code . ' ' . ($decoded['message'] ?? $response);
-            throw new ZenobankError($message, $status_code, $decoded ?? $response);
+            throw new ZenoBankError($message, $status_code, $decoded ?? $response);
         }
 
         if (!is_array($decoded)) {
-            throw new ZenobankError('Invalid JSON response', $status_code, $response);
+            throw new ZenoBankError('Invalid JSON response', $status_code, $response);
         }
 
         return $decoded;

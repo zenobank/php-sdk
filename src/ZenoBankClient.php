@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Zenobank\Sdk;
+namespace ZenoBank\Sdk;
 
-use Zenobank\Sdk\Resources\CheckoutsResource;
-use Zenobank\Sdk\Resources\WebhooksResource;
+use ZenoBank\Sdk\Resources\CheckoutsResource;
+use ZenoBank\Sdk\Resources\WebhooksResource;
 
 class ZenoBankClient
 {
@@ -15,7 +15,7 @@ class ZenoBankClient
     public readonly WebhooksResource $webhooks;
 
     /**
-     * @param string $apiKey Your Zenobank API key
+     * @param string $apiKey Your ZenoBank API key
      * @param array{baseUrl?: string} $opts
      */
     public function __construct(string $apiKey, array $opts = [])

@@ -1,6 +1,6 @@
 {
     "name": "zenobank/sdk",
-    "description": "Zenobank PHP SDK for payment checkout and webhook verification",
+    "description": "ZenoBank PHP SDK for payment checkout and webhook verification",
     "type": "library",
     "license": "MIT",
     "require": {
@@ -10,7 +10,10 @@
     },
     "autoload": {
         "psr-4": {
-            "Zenobank\\Sdk\\": "src/"
+            "ZenoBank\\Sdk\\": "src/"
         }
+    },
+    "scripts": {
+        "generate": "php scripts/generate-types.php"
     }
 }

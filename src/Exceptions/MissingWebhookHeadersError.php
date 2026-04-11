@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zenobank\Sdk\Exceptions;
+namespace ZenoBank\Sdk\Exceptions;
 
 class MissingWebhookHeadersError extends WebhookVerificationError
 {

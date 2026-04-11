@@ -1,6 +1,6 @@
-# Zenobank PHP SDK
+# ZenoBank PHP SDK
 
-PHP SDK for the Zenobank payment API. Accept crypto payments with checkout sessions and verify webhooks.
+PHP SDK for the ZenoBank payment API. Accept crypto payments with checkout sessions and verify webhooks.
 
 ## Requirements
 
@@ -19,7 +19,7 @@ composer require zenobank/sdk
 ### Initialize the client
 
 ```php
-use Zenobank\Sdk\ZenoBankClient;
+use ZenoBank\Sdk\ZenoBankClient;
 
 $client = new ZenoBankClient('your-api-key');
 ```
@@ -38,34 +38,18 @@ $checkout = $client->checkouts->create([
 header('Location: ' . $checkout->checkout_url);
 ```
 
-The response object has the following properties:
-
-| Property | Type | Description |
-|---|---|---|
-| `id` | `string` | Checkout ID |
-| `order_id` | `string` | Your order identifier |
-| `price_amount` | `string` | Price amount |
-| `price_currency` | `string` | Currency code (e.g. `USD`) |
-| `status` | `CheckoutStatus` | `OPEN`, `COMPLETED`, `PARTIALLY_PAID`, `EXPIRED`, or `CANCELLED` |
-| `checkout_url` | `string` | URL to redirect the customer to |
-| `created_at` | `string` | ISO 8601 timestamp |
-| `expires_at` | `?string` | ISO 8601 timestamp or null |
-| `success_redirect_url` | `?string` | Redirect URL after payment |
-
 ### Get a checkout
 
 ```php
 $checkout = $client->checkouts->get('ch_0gJfH4a9B2Eg1jpES');
-
-if ($checkout->status === CheckoutStatus::COMPLETED) {
-    // Payment received
-}
 ```
 
 ### Verify webhooks
 
 ```php
-use Zenobank\Sdk\Exceptions\WebhookVerificationError;
+use ZenoBank\Sdk\Exceptions\WebhookVerificationError;
+use ZenoBank\Sdk\Types\Generated\CheckoutStatus;
+use ZenoBank\Sdk\Types\WebhookEvent;
 
 $payload = file_get_contents('php://input');
 $headers = getallheaders();
@@ -73,8 +57,11 @@ $secret = 'whsec_...';
 
 try {
     $client->webhooks->verify($payload, $secret, $headers);
-    $event = json_decode($payload, true);
-    // Handle the event
+    $event = WebhookEvent::from_array(json_decode($payload, true));
+
+    if ($event->data->status === CheckoutStatus::COMPLETED) {
+        // Payment received
+    }
 } catch (WebhookVerificationError $e) {
     // Invalid signature or missing headers
     http_response_code(400);
@@ -83,14 +70,14 @@ try {
 
 ### Error handling
 
-API errors throw `ZenobankError` with the HTTP status code and response body:
+API errors throw `ZenoBankError` with the HTTP status code and response body:
 
 ```php
-use Zenobank\Sdk\Exceptions\ZenobankError;
+use ZenoBank\Sdk\Exceptions\ZenoBankError;
 
 try {
     $checkout = $client->checkouts->create([...]);
-} catch (ZenobankError $e) {
+} catch (ZenoBankError $e) {
     echo $e->status; // HTTP status code
     echo $e->body;   // Response body
 }

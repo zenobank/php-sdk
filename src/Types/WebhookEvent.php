@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Zenobank\Sdk\Types;
+namespace ZenoBank\Sdk\Types;
+
+use ZenoBank\Sdk\Types\Generated\CheckoutResponseDto;
+use ZenoBank\Sdk\Types\Generated\WebhookEventType;
 
 class WebhookEvent
 {
